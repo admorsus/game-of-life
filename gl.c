@@ -3,7 +3,6 @@
 #include <time.h>
 #include <unistd.h>
 #define byte char
-#define NAME "gl"
 
 int aint		(byte, byte, char**, int);
 char achar		(byte, byte, char**, char);
