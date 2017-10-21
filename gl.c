@@ -1,3 +1,4 @@
+//This work is in the Public Domain
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -34,7 +35,7 @@ int main (byte argc, char ** args)
 				case 't': t=aint(a,argc,args,t); break;
 				case 'r': r=aint(a,argc,args,r); break;
 				case 'p': p=1; break;
-				case 'i': i=aint(a,argc,args,i);
+				case 'i': i=aint(a,argc,args,i); break;
 				case 'c': switch (args[a][2])
 				{
 					case 'a': ca=achar(a,argc,args,ca); break;
