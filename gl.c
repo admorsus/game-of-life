@@ -1,4 +1,3 @@
-//This work is in the Public Domain
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
