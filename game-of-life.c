@@ -4,38 +4,40 @@
 #include <time.h>
 #include <unistd.h>
 
-typedef char byte;
-
 typedef struct MAT
 {
     unsigned int h; //heigth
     unsigned int l; //length
-    unsigned int ** rack; //rack
+    char **rack;    //rack
 } MAT;
 
-int aint		(byte, byte, char**, int);
-char achar		(byte, byte, char**, char);
-int ** maker	(int, int);
-int ** fillr	(int, int, int**, byte);
-int ** conway	(int, int, int**);
-int ** getcells	(int, int, int**);
-void printr		(int, int, int**, char, char, char, char, char);
-byte locals		(int, int, int**, int, int);
-void help		(char*);
-static byte activity=1;
+void help (char*);
+int aint (char, char, char**, int);
+char achar (char, char, char**, char);
+char conway (MAT*);
+void get_cells (MAT*);
+char locals (MAT*, unsigned int, unsigned int);
+void make_r (MAT*, unsigned int, unsigned int);
+void fill_r (MAT*, char);
+void print_r (MAT*, char, char, char, char, char);
 
-int main (byte argc, char ** args)
+int main (char argc, char ** args)
 {
+	char reset[20];
+    FILE *fp = popen ("tput reset", "r");
+    fread (reset, 1, sizeof(reset), fp);
+    pclose (fp);
+	
 	MAT mat;
 	
-	int l=20, h=20;
+	unsigned int l=20, h=20;
 	int t=200;
 	int i=-1;
-	byte r=33;
-	byte p=0;
+	char r=33;
+	char p=0;
 	char ca='@', cd=' ', ch=0, cv=0, cc=0;
 	
-	for (byte a=1; a<argc; a++)
+	/*for (char a=1; a<argc; a++)
 	{
 		if (args[a][0]=='-')
 		{
@@ -63,23 +65,28 @@ int main (byte argc, char ** args)
 					return 1;
 			}
 		}
-	}
+	}*/
 	int iter=0;
-	int ** rack=maker(l, h);
-	if (p)	rack=getcells(l,h,rack);
-	else	rack=fillr(l,h,rack,r);
-	do
-	{
-		activity=0;
-		printf("\e[1;1H\e[2J");
-		printr(l,h,rack,ca,cd,ch,cv,cc);
-		rack=conway(l, h, rack);
-		iter++;
+	
+	make_r(&mat, l, h);
+	
+	if (p)
+	    get_cells(&mat);
+	else
+	    fill_r(&mat, r);
+	    
+	    
+	do {
+	    //printf("%s ", reset);
+		print_r(&mat, ca,cd,ch,cv,cc);
 		usleep(t*1000);
+		iter++;
+		//printf("holao");
 	}
-	while (activity && iter!=i);
-	if (i) printf("%d iterations realised.\n", iter);
-	free(rack);
+	while (conway(&mat));
+    if (i)
+        printf("%d iterations realised.\n", iter);
+    free(mat.rack);
     return 0;
 }
 
@@ -102,45 +109,46 @@ void help (char * name)
 	printf(" -cc [C]	Print corner delimiter, representd with C\n");
 }
 
-int aint (byte a, byte argc, char ** args, int p)
+int aint (char a, char argc, char ** args, int p)
 {
 	a++;
 	if (a<argc && args[a][0]!='-') return atoi(args[a]);
 	else return p;
 }
 
-char achar (byte a, byte argc, char ** args, char def)
+char achar (char a, char argc, char ** args, char def)
 {
 	a++;
 	if (a<argc && args[a][0]!='-') return args[a][0];
 	else return def;
 }
 
-void conway (MAT *mat)
+char conway (MAT *mat)
 {
 	MAT gen;
 	int l= mat->l;
 	int h= mat->h;
+	char activity=0;
 	make_r(&gen, l, h);
 	for (int y=0; y<h; y++)
 	{
 		for (int x=0; x<l; x++)
 		{
-			char n= locals(mat->rack, x, y);
+			char n= locals(mat, x, y);
 			if (mat->rack[x][y] && n==2)
-			    gen->rack[x][y]= 1;
+			    gen.rack[x][y]= 1;
 			else if (n==3)
-			    gen->rack[x][y]= 1;
+			    gen.rack[x][y]= 1;
 			else
-			    gen->rack[x][y]= 0;
-			if (mat->rack[x][y] != gen->rack[x][y])
+			    gen.rack[x][y]= 0;
+			if (mat->rack[x][y] != gen.rack[x][y])
 			    activity=1;
 		}
 	}
 	return activity;
 }
 
-void getcells (MAT *mat)
+void get_cells (MAT *mat)
 {
 	int c=0, nx, ny;
 	int l= mat->l;
@@ -154,7 +162,7 @@ void getcells (MAT *mat)
 		scanf("%d", &nx);
 		if (nx==-1)
 		{
-			printr(mat,'@','.',0,0,0);
+			print_r(mat,'@','.',0,0,0);
 			continue;
 		}
 		else if (nx<=-2) break;
@@ -162,7 +170,7 @@ void getcells (MAT *mat)
 		scanf("%d", &ny);
 		if (ny==-1)
 		{
-			printr(mat,'@','.',0,0,0);
+			print_r(mat,'@','.',0,0,0);
 			continue;
 		}
 		else if (ny<=-2) break;
@@ -171,7 +179,7 @@ void getcells (MAT *mat)
 	}
 }
 
-char locals (MAT *mat, int x, int y)
+char locals (MAT *mat, unsigned int x, unsigned int y)
 {
 	char ul,um,ur,ml,mr,bl,bm,br;
 	int l= mat->l -1;
@@ -210,7 +218,7 @@ void make_r (MAT *mat, unsigned int l, unsigned int h)
 	}
 }
 
-void fill_r (MAT *mat)
+void fill_r (MAT *mat, char prob)
 {
 	int l= mat->l;
 	int h= mat->h;
