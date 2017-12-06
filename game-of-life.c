@@ -21,12 +21,12 @@ void make_r (MAT*, unsigned, unsigned);
 void fill_r (MAT*, char);
 void print_r (MAT*, char, char, char, char, char);
 
-unsigned main (char argc, char ** args)
+unsigned main (char argc, char **args)
 {
-	/*char reset[20];
+	char reset[20];
     FILE *fp = popen ("tput reset", "r");
-    fread (reset, 1, sizeof(reset), fp);
-    pclose (fp);*/
+    int resetsz= fread (reset, 1, sizeof(reset), fp);
+    pclose (fp);
 	
 	MAT mat;
 	
@@ -37,7 +37,7 @@ unsigned main (char argc, char ** args)
 	char p=0;
 	char ca='@', cd=' ', ch=0, cv=0, cc=0;
 	
-	/*for (char a=1; a<argc; a++)
+	for (char a=1; a<argc; a++)
 	{
 		if (args[a][0]=='-')
 		{
@@ -65,7 +65,7 @@ unsigned main (char argc, char ** args)
 					return 1;
 			}
 		}
-	}*/
+	}
 	unsigned iter=0;
 	
 	make_r(&mat, l, h);
@@ -75,15 +75,13 @@ unsigned main (char argc, char ** args)
 	else
 	    fill_r(&mat, r);
 	    
-	//print_r(&mat, ca,cd,ch,cv,cc);
-	    
 	do {
-	    printf("\033[H\033[J");
+	    write(1, reset, resetsz);
 		print_r(&mat, ca,cd,ch,cv,cc);
 		usleep(t*1000);
 		iter++;
 	}
-	while (conway(&mat));
+	while (conway(&mat) && iter<i);
 	
     if (i)
         printf("%d iterations realised.\n", iter);
@@ -146,6 +144,7 @@ char conway (MAT *mat)
 			    activity=1;
 		}
 	}
+	*mat= gen;
 	return activity;
 }
 
