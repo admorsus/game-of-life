@@ -6,32 +6,32 @@
 
 typedef struct MAT
 {
-    unsigned int h; //heigth
-    unsigned int l; //length
+    unsigned h; //heigth
+    unsigned l; //length
     char **rack;    //rack
 } MAT;
 
 void help (char*);
-int aint (char, char, char**, int);
+unsigned aint (char, char, char**, unsigned);
 char achar (char, char, char**, char);
 char conway (MAT*);
 void get_cells (MAT*);
-char locals (MAT*, unsigned int, unsigned int);
-void make_r (MAT*, unsigned int, unsigned int);
+char locals (MAT*, unsigned, unsigned);
+void make_r (MAT*, unsigned, unsigned);
 void fill_r (MAT*, char);
 void print_r (MAT*, char, char, char, char, char);
 
-int main (char argc, char ** args)
+unsigned main (char argc, char ** args)
 {
-	char reset[20];
+	/*char reset[20];
     FILE *fp = popen ("tput reset", "r");
     fread (reset, 1, sizeof(reset), fp);
-    pclose (fp);
+    pclose (fp);*/
 	
 	MAT mat;
 	
-	unsigned int l=20, h=20;
-	int t=200;
+	unsigned l=20, h=20;
+	unsigned t=200;
 	int i=-1;
 	char r=33;
 	char p=0;
@@ -66,7 +66,7 @@ int main (char argc, char ** args)
 			}
 		}
 	}*/
-	int iter=0;
+	unsigned iter=0;
 	
 	make_r(&mat, l, h);
 	
@@ -75,15 +75,16 @@ int main (char argc, char ** args)
 	else
 	    fill_r(&mat, r);
 	    
+	//print_r(&mat, ca,cd,ch,cv,cc);
 	    
 	do {
-	    //printf("%s ", reset);
+	    printf("\033[H\033[J");
 		print_r(&mat, ca,cd,ch,cv,cc);
 		usleep(t*1000);
 		iter++;
-		//printf("holao");
 	}
 	while (conway(&mat));
+	
     if (i)
         printf("%d iterations realised.\n", iter);
     free(mat.rack);
@@ -109,7 +110,7 @@ void help (char * name)
 	printf(" -cc [C]	Print corner delimiter, representd with C\n");
 }
 
-int aint (char a, char argc, char ** args, int p)
+unsigned aint (char a, char argc, char ** args, unsigned p)
 {
 	a++;
 	if (a<argc && args[a][0]!='-') return atoi(args[a]);
@@ -126,13 +127,13 @@ char achar (char a, char argc, char ** args, char def)
 char conway (MAT *mat)
 {
 	MAT gen;
-	int l= mat->l;
-	int h= mat->h;
+	unsigned l= mat->l;
+	unsigned h= mat->h;
 	char activity=0;
 	make_r(&gen, l, h);
-	for (int y=0; y<h; y++)
+	for (unsigned y=0; y<h; y++)
 	{
-		for (int x=0; x<l; x++)
+		for (unsigned x=0; x<l; x++)
 		{
 			char n= locals(mat, x, y);
 			if (mat->rack[x][y] && n==2)
@@ -150,9 +151,9 @@ char conway (MAT *mat)
 
 void get_cells (MAT *mat)
 {
-	int c=0, nx, ny;
-	int l= mat->l;
-	int h= mat->h;
+	unsigned c=0, nx, ny;
+	unsigned l= mat->l;
+	unsigned h= mat->h;
 	printf("\e[1;1H\e[2J");
 	printf("Input cells mode, input X and Y for each cell:\n");
 	printf(" at any time: -1: Show status, -2: Stop input.\n\n");
@@ -179,11 +180,11 @@ void get_cells (MAT *mat)
 	}
 }
 
-char locals (MAT *mat, unsigned int x, unsigned int y)
+char locals (MAT *mat, unsigned x, unsigned y)
 {
 	char ul,um,ur,ml,mr,bl,bm,br;
-	int l= mat->l -1;
-	int h= mat->h -1;
+	unsigned l= mat->l -1;
+	unsigned h= mat->h -1;
 	if (y<=0 || x<=0) ul=0;
 	else ul= mat->rack[x-1][y-1];
 	if (y<=0) um=0;
@@ -203,29 +204,31 @@ char locals (MAT *mat, unsigned int x, unsigned int y)
 	return ul+um+ur+ml+mr+bl+bm+br;
 }
 
-void make_r (MAT *mat, unsigned int l, unsigned int h)
+void make_r (MAT *mat, unsigned l, unsigned h)
 {
-	mat->rack= malloc(l * sizeof(int**));
+	mat->rack= malloc(l * sizeof(char*));
 	if (mat->rack == NULL)
 	    exit(1);
-	for (int x=0; x<l; x++)
+	for (unsigned x=0; x<l; x++)
 	{
-		mat->rack[x]= malloc(h * sizeof(int*));
+		mat->rack[x]= malloc(h * sizeof(char*));
 		if (mat->rack[x] == NULL)
 		    exit(1);
-		for (int y=0; y<h; y++)
+		for (unsigned y=0; y<h; y++)
 		    mat->rack[x][y]= 0;
 	}
+	mat->l= l;
+	mat->h= h;
 }
 
 void fill_r (MAT *mat, char prob)
 {
-	int l= mat->l;
-	int h= mat->h;
+	unsigned l= mat->l;
+	unsigned h= mat->h;
 	srand(time(NULL));
-	for (int x=0; x<l; x++)
+	for (unsigned x=0; x<l; x++)
 	{
-		for (int y=0; y<h; y++)
+		for (unsigned y=0; y<h; y++)
 		{
 			char random= rand()%100;
 			if (random<prob)
@@ -236,20 +239,20 @@ void fill_r (MAT *mat, char prob)
 
 void print_r (MAT *mat, char a, char d, char delim_z, char delim_v, char delim_c)
 {
-    int l= mat->l;
-	int h= mat->h;
+    unsigned l= mat->l;
+	unsigned h= mat->h;
     if (delim_c)
 	    printf("%c",delim_c);
 	if (delim_z)
-	    for (int i=0; i<=l*2; i++)
+	    for (unsigned i=0; i<=l*2; i++)
 	        printf("%c",delim_z);
 	if (delim_c)
 	    printf("%c\n",delim_c);
-	for (int y=0; y<h; y++)
+	for (unsigned y=0; y<h; y++)
 	{
 		if (delim_v)
 		    printf("%c ",delim_v);
-		for (int x=0; x<l; x++)
+		for (unsigned x=0; x<l; x++)
 		{
 			if (mat->rack[x][y])
 			    printf("%c",a);
@@ -264,7 +267,7 @@ void print_r (MAT *mat, char a, char d, char delim_z, char delim_v, char delim_c
 	if (delim_c)
 	    printf("%c",delim_c);
 	if (delim_z)
-	    for (int i=0; i<=l*2; i++)
+	    for (unsigned i=0; i<=l*2; i++)
 	        printf("%c",delim_z);
 	if (delim_c)
 	    printf("%c\n",delim_c);
