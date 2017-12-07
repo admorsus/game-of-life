@@ -1,0 +1,9 @@
+A newer version of this program is in the master branch. It has a lot of
+ inprovenments, better use of the C language, better performance, more
+ options and a MUCH clear code.
+
+However, I'd like to keep this old version here, because I think it's a
+ good example of how to make something cool knowing only very basic C,
+ without havig a idea about structs, not knowing much about pointers...
+
+I hope you don't dislike it too much! :-)
