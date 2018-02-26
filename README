@@ -1,22 +1,46 @@
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
-|             @ @ @       @         @ @   |
-|             @     @       @ @   @ @   @ |
-|   @ @         @   @   @           @   @ |
-|               @   @ @               @ @ |
-|                 @ @                   @ |
-|      @            @             @   @   |
-|    @   @          @ @           @     @ |
-|      @ @        @     @           @   @ |
-|                 @   @                 @ |
-|                   @               @     |
-|                                   @   @ |
-|   @                                 @   |
-|   @ @ @                                 |
-|       @                           @ @   |
-|     @   @                         @ @   |
-|   @     @     @ @ @     @ @             |
-| @ @     @     @ @ @         @           |
-|   @   @ @                         @ @   |
-|                         @ @           @ |
-|                             @   @ @ @   |
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+A Conway's Game of Life for shell wrote in C.
+It has a lot of options to customise everything
+ on the game.
+
+It looks like this:
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+ |             @ @ @       @         @ @   |
+ |             @     @       @ @   @ @   @ |
+ |   @ @         @   @   @           @   @ |
+ |               @   @ @               @ @ |
+ |                 @ @                   @ |
+ |      @            @             @   @   |
+ |    @   @          @ @           @     @ |
+ |      @ @        @     @           @   @ |
+ |                 @   @                 @ |
+ |                   @               @     |
+ |                         @         @   @ |
+ |   @                       @         @   |
+ |   @ @ @               @ @ @             |
+ |       @                           @ @   |
+ |     @   @                         @ @   |
+ |   @     @     @ @ @     @ @             |
+ | @ @     @     @ @ @         @           |
+ |   @   @ @                         @ @   |
+ |                         @ @           @ |
+ |                             @   @ @ @   |
+ +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~+
+
+Availible options:
+ -x N       Set grid length to N
+ -y N       Set grid heigth to N
+ -t N       Set time between iterations to N
+ -i N       Set maximum iterations to N
+ -r N       Set appearance probability to N
+ -p         Start input cells mode
+ -l         Show all delimiters
+ -a C       Represent alive cells with C
+ -d C       Represent dead cells with C
+ -z C       Represent horizontal delimiters with C
+ -v C       Represent vertical delimiters with C
+ -c C       Represent corner delimiters with C
+ -s         Allows scrolling
+ -q         Do not show final message
+ -h         Show help
+
+Hope you enjoy it :D
